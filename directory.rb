@@ -22,8 +22,14 @@ end
 
 #Prints all the names and cohort in order
 def print_names(names)
-  names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
-    puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  #Preferred method using each_with_index
+  # names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
+  #   puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  # end
+  #Alternative method using until
+  index = 0
+  until !student = names.shift do
+    puts "#{index += 1}. #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 
