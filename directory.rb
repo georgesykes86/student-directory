@@ -1,30 +1,35 @@
 #Prompts the user to input a name and stores in student array
 def input_students
-  puts "Please enter the names of the students"
+  puts "Please enter the name, age, and nationality of the students in the format - George, 31, British"
   puts "To finish just hit enter twice"
   #create an empty array
   students = []
-  name = gets.chomp
-  while !name.empty? do
-    students << {name: name, cohort: :november}
+  details = gets.chomp
+  while !details.empty? do
+    details =~ /([a-zA-Z ]*), *(\d*), *([a-zA-Z ]*)/
+    name = $1
+    age = $2
+    nationality = $3
+    students << {name: name, cohort: :november, age: age, nationality: nationality}
     print "Now we have #{students.count} "
     puts students.count == 1 ? "student" : "students"
-    name = gets.chomp
+    details = gets.chomp
   end
   #return the array
   students
 end
 
 def print_header
-  puts"The students of George's Academy with names shorter than 12 letters"
-  puts "-------------------"
+  printer("The students of George's Academy with names shorter than 12 letters")
+  printer("--------------------------------------------")
 end
 
 #Prints all the names and cohort in order
 def print_names(names)
   #Preferred method using each_with_index
   names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
-    puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    printer("#{index+1}. #{student[:name]} | Age: #{student[:age]} | "\
+            "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
   end
   #Alternative method using until (uncomment code below to use, remember to comment ou code above)
   # students = names.dup
@@ -47,8 +52,8 @@ end
 
 #Prints a summary total of students
 def print_footer(names)
-  print "Overall, we have #{names.count} great "
-  puts names.count == 1 ? "student" : "students"
+  names.count == 1 ? noun = "student" : noun = "students"
+  printer("Overall, we have #{names.count} great #{noun}")
 end
 
 def names_by_first_initial(names)
@@ -68,6 +73,9 @@ def names_by_first_initial(names)
   end
 end
 
+def printer(string)
+  puts string.center(80)
+end
 
 students = input_students
 names_by_first_initial(students)
