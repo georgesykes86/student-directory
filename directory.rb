@@ -16,21 +16,33 @@ def input_students
 end
 
 def print_header
-  puts"The students of George's Academy"
+  puts"The students of George's Academy with names shorter than 12 letters"
   puts "-------------------"
 end
 
 #Prints all the names and cohort in order
 def print_names(names)
   #Preferred method using each_with_index
-  # names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
-  #   puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
-  # end
-  #Alternative method using until
-  index = 0
-  until !student = names.shift do
-    puts "#{index += 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
+    puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
   end
+  #Alternative method using until (uncomment code below to use, remember to comment ou code above)
+  # students = names.dup
+  # index = 0
+  # until !student = students.shift do
+  #   if student[:name].size < 12
+  #     puts "#{index += 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  #   end
+  # end
+  #Alternative method using while (uncomment code below to use, remember to comment ou code above)
+  # index  = 0
+  # while index < names.length do
+  #   name = names[index]
+  #   if name[:name].size < 12
+  #     puts "#{index + 1}. #{name[:name]} (#{name[:cohort]} cohort)"
+  #   end
+  #   index += 1
+  # end
 end
 
 #Prints a summary total of students
