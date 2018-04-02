@@ -7,7 +7,6 @@ def input_students
   students = []
   details = gets.chomp
   while !details.empty? do
-    puts "Enter name"
     details =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
     $1.empty? ? name = "Anon" : name = $1
     $2.empty? ? age = "unknown" : age = $2
@@ -21,12 +20,13 @@ def input_students
     answer = gets.chomp.downcase
     if answer == "y"
       students << { name: name,
-                    cohort: cohort,
+                    cohort: cohort.to_sym,
                     age: age,
                     nationality: nationality }
       print "Now we have #{students.count} "
       puts students.count == 1 ? "student" : "students"
     end
+    puts "Enter student information"
     details = gets.chomp
   end
   #return the array
