@@ -1,7 +1,7 @@
 # Student-Directory
 
 The student directory script allows you to manage the list of students enrolled
-at Villain's Academy
+at George's Academy
 
 ## How to use ##
 
