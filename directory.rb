@@ -1,18 +1,32 @@
 #Prompts the user to input a name and stores in student array
 def input_students
-  puts "Please enter the name, age, and nationality of the students in the format - George, 31, British"
+  puts "Please enter the name, age, nationality and cohort of the students in the format:"
+  puts "George, 31, British, December"
   puts "To finish just hit enter twice"
   #create an empty array
   students = []
   details = gets.chomp
   while !details.empty? do
-    details =~ /([a-zA-Z ]*), *(\d*), *([a-zA-Z ]*)/
-    name = $1
-    age = $2
-    nationality = $3
-    students << {name: name, cohort: :november, age: age, nationality: nationality}
-    print "Now we have #{students.count} "
-    puts students.count == 1 ? "student" : "students"
+    puts "Enter name"
+    details =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
+    $1.empty? ? name = "Anon" : name = $1
+    $2.empty? ? age = "unknown" : age = $2
+    $3.empty? ? nationality = "unknown" : nationality = $3
+    $4.empty? ? cohort = "April" : cohort = $4
+    puts "Name: #{name}"
+    puts "Age: #{age}"
+    puts "Nationality: #{nationality}"
+    puts "Cohort: #{cohort}"
+    puts "Is this correct? y/n"
+    answer = gets.chomp.downcase
+    if answer == "y"
+      students << { name: name,
+                    cohort: cohort,
+                    age: age,
+                    nationality: nationality }
+      print "Now we have #{students.count} "
+      puts students.count == 1 ? "student" : "students"
+    end
     details = gets.chomp
   end
   #return the array
