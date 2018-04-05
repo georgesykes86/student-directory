@@ -1,3 +1,26 @@
+def interactive_menu
+  students = []
+  loop do
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+    selection = gets.chomp
+    case selection
+    when "1"
+      students = input_students
+    when "2"
+      print_header
+      print_names(students)
+      print_footer(students)
+    when "9"
+      exit
+    else
+      puts "I don't know what you mean, try again"
+    end
+  end
+end
+
+
 #Prompts the user to input a name and stores in student array
 def input_students
   puts "Please enter the name, age, nationality and cohort of the students in the format:"
@@ -40,45 +63,48 @@ end
 
 #Prints all the names and cohort in order
 def print_names(names)
-  #Preferred method using each_with_index for printing names < 12
-  # names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
-  #   printer("#{index+1}. #{student[:name]} | Age: #{student[:age]} | "\
-  #           "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
-  # end
-  #Alternative method using until (uncomment code below to use, remember to comment ou code above)
-  # students = names.dup
-  # index = 0
-  # until !student = students.shift do
-  #   if student[:name].size < 12
-  #     puts "#{index += 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-  #   end
-  # end
-  #Alternative method using while (uncomment code below to use, remember to comment ou code above)
-  # index  = 0
-  # while index < names.length do
-  #   name = names[index]
-  #   if name[:name].size < 12
-  #     puts "#{index + 1}. #{name[:name]} (#{name[:cohort]} cohort)"
-  #   end
-  #   index += 1
-  # end
+  if !names.empty?
+    #Preferred method using each_with_index for printing names < 12
+    # names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
+    #   printer("#{index+1}. #{student[:name]} | Age: #{student[:age]} | "\
+    #           "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
+    # end
+    #Alternative method using until (uncomment code below to use, remember to comment ou code above)
+    # students = names.dup
+    # index = 0
+    # until !student = students.shift do
+    #   if student[:name].size < 12
+    #     puts "#{index += 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    #   end
+    # end
+    #Alternative method using while (uncomment code below to use, remember to comment ou code above)
+    # index  = 0
+    # while index < names.length do
+    #   name = names[index]
+    #   if name[:name].size < 12
+    #     puts "#{index + 1}. #{name[:name]} (#{name[:cohort]} cohort)"
+    #   end
+    #   index += 1
+    # end
 
-  # Prints names grouped by cohort
-  index = 0
-  names.map {|student| student[:cohort]}.uniq.each do |month|
-    names.select {|name| name[:name].size < 12 && name[:cohort] == month}
-    .each do |student|
-            printer("#{index += 1}. #{student[:name]} | Age: #{student[:age]} | "\
-                    "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
+    # Prints names grouped by cohort
+    index = 0
+    names.map {|student| student[:cohort]}.uniq.each do |month|
+      names.select {|name| name[:name].size < 12 && name[:cohort] == month}
+      .each do |student|
+              printer("#{index += 1}. #{student[:name]} | Age: #{student[:age]} | "\
+                      "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
+      end
     end
+  else
+    printer "There are no students in the academy"
   end
-
 end
 
 #Prints a summary total of students
 def print_footer(names)
   names.count == 1 ? noun = "student" : noun = "students"
-  printer("Overall, we have #{names.count} great #{noun}")
+  printer("Overall, we have #{names.count} great #{noun}") if !names.empty?
 end
 
 def names_by_first_initial(names)
@@ -88,10 +114,7 @@ def names_by_first_initial(names)
   input = gets.chomp
   while input != "exit" do
     print_header
-    if names.empty?
-      printer "There are no students in the academy"
-      break
-    elsif !input.empty?
+    if !input.empty?
       print_names(names.select {|name| name[:name].chr.downcase == input.downcase})
     else
       print_names(names)
@@ -105,5 +128,4 @@ def printer(string)
   puts string.center(80)
 end
 
-students = input_students
-names_by_first_initial(students)
+interactive_menu
