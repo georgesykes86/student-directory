@@ -1,33 +1,43 @@
+@students = []
+
 def interactive_menu
-  students = []
   loop do
-    puts "1. Input the students"
-    puts "2. Show the students"
-    puts "9. Exit"
+    print_menu
     selection = gets.chomp
-    case selection
-    when "1"
-      students = input_students
-    when "2"
-      print_header
-      print_names(students)
-      print_footer(students)
-    when "9"
-      exit
-    else
-      puts "I don't know what you mean, try again"
-    end
+    process(selection)
   end
 end
 
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit"
+end
+
+def show_students
+  print_header
+  print_names(@students)
+  print_footer(@students)
+end
+
+def process(selection)
+  case selection
+  when "1"
+    input_students
+  when "2"
+    show_students
+  when "9"
+    exit
+  else
+    puts "I don't know what you mean, try again"
+  end
+end
 
 #Prompts the user to input a name and stores in student array
 def input_students
   puts "Please enter the name, age, nationality and cohort of the students in the format:"
   puts "George, 31, British, December"
   puts "To finish just hit enter twice"
-  #create an empty array
-  students = []
   details = gets[0..-2]
   while !details.empty? do
     details =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
@@ -42,18 +52,16 @@ def input_students
     puts "Is this correct? y/n"
     answer = gets.strip.downcase
     if answer == "y"
-      students << { name: name,
+      @students << { name: name,
                     cohort: cohort.to_sym,
                     age: age,
                     nationality: nationality }
-      print "Now we have #{students.count} "
-      puts students.count == 1 ? "student" : "students"
+      print "Now we have #{@students.count} "
+      puts @students.count == 1 ? "student" : "students"
     end
     puts "Enter student information"
     details = gets.strip
   end
-  #return the array
-  students
 end
 
 def print_header
@@ -64,30 +72,6 @@ end
 #Prints all the names and cohort in order
 def print_names(names)
   if !names.empty?
-    #Preferred method using each_with_index for printing names < 12
-    # names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
-    #   printer("#{index+1}. #{student[:name]} | Age: #{student[:age]} | "\
-    #           "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
-    # end
-    #Alternative method using until (uncomment code below to use, remember to comment ou code above)
-    # students = names.dup
-    # index = 0
-    # until !student = students.shift do
-    #   if student[:name].size < 12
-    #     puts "#{index += 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-    #   end
-    # end
-    #Alternative method using while (uncomment code below to use, remember to comment ou code above)
-    # index  = 0
-    # while index < names.length do
-    #   name = names[index]
-    #   if name[:name].size < 12
-    #     puts "#{index + 1}. #{name[:name]} (#{name[:cohort]} cohort)"
-    #   end
-    #   index += 1
-    # end
-
-    # Prints names grouped by cohort
     index = 0
     names.map {|student| student[:cohort]}.uniq.each do |month|
       names.select {|name| name[:name].size < 12 && name[:cohort] == month}
