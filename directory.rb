@@ -3,8 +3,7 @@
 def interactive_menu
   loop do
     print_menu
-    selection = gets.chomp
-    process(selection)
+    process(gets.chomp)
   end
 end
 
@@ -16,8 +15,8 @@ end
 
 def show_students
   print_header
-  print_names(@students)
-  print_footer(@students)
+  print_students_list
+  print_footer
 end
 
 def process(selection)
@@ -70,11 +69,11 @@ def print_header
 end
 
 #Prints all the names and cohort in order
-def print_names(names)
-  if !names.empty?
+def print_students_list
+  if !@students.empty?
     index = 0
-    names.map {|student| student[:cohort]}.uniq.each do |month|
-      names.select {|name| name[:name].size < 12 && name[:cohort] == month}
+    @students.map {|student| student[:cohort]}.uniq.each do |month|
+      @students.select {|name| name[:name].size < 12 && name[:cohort] == month}
       .each do |student|
               printer("#{index += 1}. #{student[:name]} | Age: #{student[:age]} | "\
                       "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
@@ -86,12 +85,12 @@ def print_names(names)
 end
 
 #Prints a summary total of students
-def print_footer(names)
-  names.count == 1 ? noun = "student" : noun = "students"
-  printer("Overall, we have #{names.count} great #{noun}") if !names.empty?
+def print_footer
+  @students.count == 1 ? noun = "student" : noun = "students"
+  printer("Overall, we have #{@students.count} great #{noun}") if !@students.empty?
 end
 
-def names_by_first_initial(names)
+def names_by_first_initial
   puts "Please enter a first name initial to search by"
   puts "Press enter twice to print all names"
   puts "Type exit to leave program"
