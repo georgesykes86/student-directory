@@ -11,7 +11,7 @@ def input_students
     $1.empty? ? name = "Anon" : name = $1
     $2.empty? ? age = "unknown" : age = $2
     $3.empty? ? nationality = "unknown" : nationality = $3
-    $4.empty? ? cohort = "April" : cohort = $4
+    $4.empty? ? cohort = "April" : cohort = $4.downcase.capitalize
     puts "Name: #{name}"
     puts "Age: #{age}"
     puts "Nationality: #{nationality}"
@@ -40,11 +40,11 @@ end
 
 #Prints all the names and cohort in order
 def print_names(names)
-  #Preferred method using each_with_index
-  names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
-    printer("#{index+1}. #{student[:name]} | Age: #{student[:age]} | "\
-            "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
-  end
+  #Preferred method using each_with_index for printing names < 12
+  # names.select {|name| name[:name].size < 12}.each_with_index do |student, index|
+  #   printer("#{index+1}. #{student[:name]} | Age: #{student[:age]} | "\
+  #           "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
+  # end
   #Alternative method using until (uncomment code below to use, remember to comment ou code above)
   # students = names.dup
   # index = 0
@@ -62,6 +62,17 @@ def print_names(names)
   #   end
   #   index += 1
   # end
+
+  # Prints names grouped by cohort
+  index = 0
+  names.map {|student| student[:cohort]}.uniq.each do |month|
+    names.select {|name| name[:name].size < 12 && name[:cohort] == month}
+    .each do |student|
+            printer("#{index += 1}. #{student[:name]} | Age: #{student[:age]} | "\
+                    "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
+    end
+  end
+
 end
 
 #Prints a summary total of students
