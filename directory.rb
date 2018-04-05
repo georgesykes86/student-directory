@@ -5,7 +5,7 @@ def input_students
   puts "To finish just hit enter twice"
   #create an empty array
   students = []
-  details = gets.strip
+  details = gets[0..-2]
   while !details.empty? do
     details =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
     $1.empty? ? name = "Anon" : name = $1
@@ -88,7 +88,10 @@ def names_by_first_initial(names)
   input = gets.chomp
   while input != "exit" do
     print_header
-    if !input.empty?
+    if names.empty?
+      printer "There are no students in the academy"
+      break
+    elsif !input.empty?
       print_names(names.select {|name| name[:name].chr.downcase == input.downcase})
     else
       print_names(names)
