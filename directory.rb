@@ -34,33 +34,48 @@ end
 
 #Prompts the user to input a name and stores in student array
 def input_students
+  print_input_instructions
+  while (details = gets.strip) && !details.empty? do
+    student = parse_input_data(details)
+    print_user_input(student)
+    if gets.strip.downcase == "y"
+      add_student(student)
+    end
+    puts "Enter student information"
+  end
+end
+
+def print_input_instructions
   puts "Please enter the name, age, nationality and cohort of the students in the format:"
   puts "George, 31, British, December"
   puts "To finish just hit enter twice"
-  details = gets[0..-2]
-  while !details.empty? do
-    details =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
-    $1.empty? ? name = "Anon" : name = $1
-    $2.empty? ? age = "unknown" : age = $2
-    $3.empty? ? nationality = "unknown" : nationality = $3
-    $4.empty? ? cohort = "April" : cohort = $4.downcase.capitalize
-    puts "Name: #{name}"
-    puts "Age: #{age}"
-    puts "Nationality: #{nationality}"
-    puts "Cohort: #{cohort}"
-    puts "Is this correct? y/n"
-    answer = gets.strip.downcase
-    if answer == "y"
-      @students << { name: name,
-                    cohort: cohort.to_sym,
-                    age: age,
-                    nationality: nationality }
-      print "Now we have #{@students.count} "
-      puts @students.count == 1 ? "student" : "students"
-    end
-    puts "Enter student information"
-    details = gets.strip
-  end
+end
+
+def parse_input_data(person_input)
+  input_details = {}
+  person_input =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
+  $1.empty? ? input_details[:name] = "Anon" : input_details[:name] = $1
+  $2.empty? ? input_details[:age] = "unknown" : input_details[:age] = $2
+  $3.empty? ? input_details[:nationality] = "unknown" : input_details[:nationality] = $3
+  $4.empty? ? input_details[:cohort] = "April" : input_details[:cohort] = $4.downcase.capitalize
+  input_details
+end
+
+def print_user_input(person_info)
+  puts "Name: #{person_info[:name]}"
+  puts "Age: #{person_info[:age]}"
+  puts "Nationality: #{person_info[:nationality]}"
+  puts "Cohort: #{person_info[:cohort]}"
+  puts "Is this correct? y/n"
+end
+
+def add_student(student)
+  @students << { name: student[:name],
+                cohort: student[:cohort].to_sym,
+                age: student[:age],
+                nationality: student[:nationality] }
+  print "Now we have #{@students.count} "
+  puts @students.count == 1 ? "student" : "students"
 end
 
 def print_header
@@ -90,21 +105,21 @@ def print_footer
   printer("Overall, we have #{@students.count} great #{noun}") if !@students.empty?
 end
 
-def names_by_first_initial
+def print_names_by_first_initial
+  print_search_instructions
+  input = gets.chomp
+  print_header
+  if !input.empty?
+    print_names(@students.select {|name| name[:name].chr.downcase == input.downcase})
+  else
+    print_students_list
+  end
+  print_footer
+end
+
+def print_search_instructions
   puts "Please enter a first name initial to search by"
   puts "Press enter twice to print all names"
-  puts "Type exit to leave program"
-  input = gets.chomp
-  while input != "exit" do
-    print_header
-    if !input.empty?
-      print_names(names.select {|name| name[:name].chr.downcase == input.downcase})
-    else
-      print_names(names)
-    end
-    print_footer(names)
-    input = gets.chomp
-  end
 end
 
 def printer(string)
