@@ -5,7 +5,7 @@ def input_students
   puts "To finish just hit enter twice"
   #create an empty array
   students = []
-  details = gets.chomp
+  details = gets.strip
   while !details.empty? do
     details =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
     $1.empty? ? name = "Anon" : name = $1
@@ -17,7 +17,7 @@ def input_students
     puts "Nationality: #{nationality}"
     puts "Cohort: #{cohort}"
     puts "Is this correct? y/n"
-    answer = gets.chomp.downcase
+    answer = gets.strip.downcase
     if answer == "y"
       students << { name: name,
                     cohort: cohort.to_sym,
@@ -27,7 +27,7 @@ def input_students
       puts students.count == 1 ? "student" : "students"
     end
     puts "Enter student information"
-    details = gets.chomp
+    details = gets.strip
   end
   #return the array
   students
