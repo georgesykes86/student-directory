@@ -13,6 +13,7 @@ def print_menu
   puts "2. Show the students"
   puts "3. Save the list of students to file"
   puts "4. Load the list from file"
+  puts "5. Search students by first initial"
   puts "9. Exit"
 end
 
@@ -34,6 +35,8 @@ def process(selection)
   when "4"
     file = get_filename
     load_students(file)
+  when "5"
+    print_names_by_first_initial
   when "9"
     exit
   else
@@ -140,11 +143,11 @@ def print_header
 end
 
 #Prints all the names and cohort in order
-def print_students_list
-  if !@students.empty?
+def print_students_list(students = @students)
+  if !students.empty?
     index = 0
-    @students.map {|student| student[:cohort]}.uniq.each do |month|
-      @students.select {|name| name[:name].size < 12 && name[:cohort] == month}
+    students.map {|student| student[:cohort]}.uniq.each do |month|
+      students.select {|name| name[:name].size < 12 && name[:cohort] == month}
       .each do |student|
               printer("#{index += 1}. #{student[:name]} | Age: #{student[:age]} | "\
                       "Nationality: #{student[:nationality]} (#{student[:cohort]} cohort)")
@@ -166,7 +169,7 @@ def print_names_by_first_initial
   input = STDIN.gets.chomp
   print_header
   if !input.empty?
-    print_names(@students.select {|name| name[:name].chr.downcase == input.downcase})
+    print_students_list(@students.select {|name| name[:name].chr.downcase == input.downcase})
   else
     print_students_list
   end
