@@ -55,10 +55,11 @@ end
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
-    name, age, nationality, cohort = line.chomp.split(",")
-    @students << { name: name, age: age, nationality: nationality, cohort: cohort.to_sym }
+    student = parse_input_data(line)
+    add_student(student) if !student.empty?
   end
   file.close
+  print_summary
 end
 
 #Prompts the user to input a name and stores in student array
@@ -66,8 +67,13 @@ def input_students
   print_input_instructions
   while (details = STDIN.gets.strip) && !details.empty? do
     student = parse_input_data(details)
-    print_user_input(student)
-    add_student(student) if STDIN.gets.strip.downcase == "y"
+    if !student.empty?
+      print_user_input(student)
+      if STDIN.gets.strip.downcase == "y"
+        add_student(student)
+        print_summary
+      end
+    end
     puts "Enter student information"
   end
 end
@@ -80,12 +86,18 @@ end
 
 def parse_input_data(person_input)
   input_details = {}
-  person_input =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
-  $1.empty? ? input_details[:name] = "Anon" : input_details[:name] = $1
-  $2.empty? ? input_details[:age] = "unknown" : input_details[:age] = $2
-  $3.empty? ? input_details[:nationality] = "unknown" : input_details[:nationality] = $3
-  $4.empty? ? input_details[:cohort] = "April" : input_details[:cohort] = $4.downcase.capitalize
-  input_details
+  begin
+    person_input =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
+    $1.empty? ? input_details[:name] = "Anon" : input_details[:name] = $1
+    $2.empty? ? input_details[:age] = "unknown" : input_details[:age] = $2
+    $3.empty? ? input_details[:nationality] = "unknown" : input_details[:nationality] = $3
+    $4.empty? ? input_details[:cohort] = "April" : input_details[:cohort] = $4.downcase.capitalize
+  rescue Exception => e
+    puts "Input data not it the correct format"
+    return input_details
+  else
+    input_details
+  end
 end
 
 def print_user_input(person_info)
@@ -101,8 +113,6 @@ def add_student(student)
                 cohort: student[:cohort].to_sym,
                 age: student[:age],
                 nationality: student[:nationality] }
-  print "Now we have #{@students.count} "
-  puts @students.count == 1 ? "student" : "students"
 end
 
 def save_students
@@ -161,6 +171,11 @@ end
 
 def printer(string)
   puts string.center(80)
+end
+
+def print_summary
+  print "Now we have #{@students.count} "
+  puts @students.count == 1 ? "student" : "students"
 end
 
 interactive_menu
