@@ -1,9 +1,10 @@
 @students = []
 
 def interactive_menu
+  try_load_students
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -38,8 +39,21 @@ def process(selection)
   end
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
+end
+
+
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, age, nationality, cohort = line.chomp.split(",")
     @students << { name: name, age: age, nationality: nationality, cohort: cohort.to_sym }
@@ -50,12 +64,10 @@ end
 #Prompts the user to input a name and stores in student array
 def input_students
   print_input_instructions
-  while (details = gets.strip) && !details.empty? do
+  while (details = STDIN.gets.strip) && !details.empty? do
     student = parse_input_data(details)
     print_user_input(student)
-    if gets.strip.downcase == "y"
-      add_student(student)
-    end
+    add_student(student) if STDIN.gets.strip.downcase == "y"
     puts "Enter student information"
   end
 end
@@ -132,7 +144,7 @@ end
 
 def print_names_by_first_initial
   print_search_instructions
-  input = gets.chomp
+  input = STDIN.gets.chomp
   print_header
   if !input.empty?
     print_names(@students.select {|name| name[:name].chr.downcase == input.downcase})
