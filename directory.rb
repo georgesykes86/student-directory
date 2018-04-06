@@ -46,8 +46,8 @@ def try_load_students
     load_students(filename)
     puts "Loaded #{@students.count} from #{filename}"
   else
-    puts "Sorry, #{filename} doesn't exist."
-    exit
+    puts "Sorry, #{filename} doesn't exist. Loading from students.csv"
+    load_students
   end
 end
 
