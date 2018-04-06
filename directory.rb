@@ -123,6 +123,7 @@ def save_students
     file.puts csv_line
   end
   file.close
+  puts "Students have been saveed"
 end
 
 def print_header
