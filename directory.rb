@@ -12,7 +12,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list of students to students.csv"
-  puts "4. Load the list from students.csv"
+  # puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
 
