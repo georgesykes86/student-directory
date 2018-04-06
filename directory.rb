@@ -11,8 +11,8 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list of students to students.csv"
-  # puts "4. Load the list from students.csv"
+  puts "3. Save the list of students to file"
+  puts "4. Load the list from file"
   puts "9. Exit"
 end
 
@@ -29,9 +29,11 @@ def process(selection)
   when "2"
     show_students
   when "3"
-    save_students
+    file = get_filename
+    save_students(file)
   when "4"
-    load_students
+    file = get_filename
+    load_students(file)
   when "9"
     exit
   else
@@ -41,8 +43,10 @@ end
 
 def try_load_students
   filename = ARGV.first
-  return if filename.nil?
-  if File.exists?(filename)
+  if filename.nil?
+    puts "Loading from students.csv"
+    load_students
+  elsif File.exists?(filename)
     load_students(filename)
     puts "Loaded #{@students.count} from #{filename}"
   else
@@ -53,13 +57,17 @@ end
 
 
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    student = parse_input_data(line)
-    add_student(student) if !student.empty?
+  if File.exists?(filename)
+    file = File.open(filename, "r")
+    file.readlines.each do |line|
+      student = parse_input_data(line)
+      add_student(student) if !student.empty?
+    end
+    file.close
+    print_summary
+  else
+    puts "File #{filename} does not exist"
   end
-  file.close
-  print_summary
 end
 
 #Prompts the user to input a name and stores in student array
@@ -115,15 +123,15 @@ def add_student(student)
                 nationality: student[:nationality] }
 end
 
-def save_students
-  file = File.open("students.csv", "w")
+def save_students(filename = "students.csv")
+  file = File.open(filename, "w")
   @students.each do |student|
     student_data = [student[:name], student[:age], student[:nationality], student[:cohort]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
   file.close
-  puts "Students have been saveed"
+  puts "Students have been saved"
 end
 
 def print_header
@@ -177,6 +185,11 @@ end
 def print_summary
   print "Now we have #{@students.count} "
   puts @students.count == 1 ? "student" : "students"
+end
+
+def get_filename
+  puts "Please enter a filename"
+  file = gets.chomp
 end
 
 interactive_menu
