@@ -1,3 +1,5 @@
+require 'csv'
+
 @students = []
 
 def interactive_menu
@@ -61,11 +63,8 @@ end
 
 def load_students(filename = "students.csv")
   if File.exists?(filename)
-    File.open(filename, "r") do |file|
-      file.readlines.each do |line|
-        student = parse_input_data(line)
-        add_student(student) if !student.empty?
-      end
+    CSV.foreach(filename) do |line|
+      add_student(line) if !line.empty?
     end
     print_summary
   else
@@ -96,13 +95,13 @@ def print_input_instructions
 end
 
 def parse_input_data(person_input)
-  input_details = {}
+  input_details = []
   begin
     person_input =~ /^([a-zA-Z ]+),? *(\d*),? *([a-zA-Z ]*),? *([a-zA-Z ]*)/
-    $1.empty? ? input_details[:name] = "Anon" : input_details[:name] = $1
-    $2.empty? ? input_details[:age] = "unknown" : input_details[:age] = $2
-    $3.empty? ? input_details[:nationality] = "unknown" : input_details[:nationality] = $3
-    $4.empty? ? input_details[:cohort] = "April" : input_details[:cohort] = $4.downcase.capitalize
+    $1.empty? ? input_details << "Anon" : input_details << $1
+    $2.empty? ? input_details << "unknown" : input_details << $2
+    $3.empty? ? input_details << "unknown" : input_details << $3
+    $4.empty? ? input_details << "April" : input_details << $4.downcase.capitalize
   rescue Exception => e
     puts "Input data not it the correct format"
     return input_details
@@ -112,26 +111,24 @@ def parse_input_data(person_input)
 end
 
 def print_user_input(person_info)
-  puts "Name: #{person_info[:name]}"
-  puts "Age: #{person_info[:age]}"
-  puts "Nationality: #{person_info[:nationality]}"
-  puts "Cohort: #{person_info[:cohort]}"
+  puts "Name: #{person_info[0]}"
+  puts "Age: #{person_info[1]}"
+  puts "Nationality: #{person_info[2]}"
+  puts "Cohort: #{person_info[3]}"
   puts "Is this correct? y/n"
 end
 
 def add_student(student)
-  @students << { name: student[:name],
-                cohort: student[:cohort].to_sym,
-                age: student[:age],
-                nationality: student[:nationality] }
+  @students << { name: student[0],
+                cohort: student[3].to_sym,
+                age: student[1],
+                nationality: student[2] }
 end
 
 def save_students(filename = "students.csv")
-  File.open(filename, "w") do |file|
+  CSV.open(filename, "w") do |csv|
     @students.each do |student|
-      student_data = [student[:name], student[:age], student[:nationality], student[:cohort]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      csv << [student[:name], student[:age], student[:nationality], student[:cohort]]
     end
   end
   puts "Students have been saved"
